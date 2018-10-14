@@ -35,18 +35,31 @@ object List {
       case Cons(_, t) => drop(t, n-1)
     }
   
-  def dropWhile[A](l: List[A], f: A => Boolean): List[A] = l match {
-    case Cons(h, t) if (f(h)) => dropWhile(t, f)
+  def dropWhile[A](l: List[A])(f: A => Boolean): List[A] = l match {
+    case Cons(h, t) if (f(h)) => dropWhile(t)(f)
     case _ => l
   }
 
-}
+  def append[A](hl: List[A], tl: List[A]): List[A] = hl match {
+    case Nil => tl
+    case Cons(h, t) => Cons(h, append(t, tl))
+  }
+
+  def init[A](l: List[A]): List[A] = l match {
+    case Nil => sys.error("init of empty list")
+    case Cons(_, Nil) => Nil
+    case Cons(h, t) => Cons(h, init(t))
+  }
+}   
   
 
 object Main extends App {
+  println(List(1, 2, 3))
   println(List.sum(List(1, 2, 3)))
   println(List.tail(List(1, 2, 3)))
   println(List.setHead(List(1, 3, 4), 2))
   println(List.drop(List(1, 2, 3), 1))
-  println(List.dropWhile(List(1, 2, 3), (i: Int) => i < 3))
+  val xs = List(1, 2, 3)
+  println(List.dropWhile(xs)(i => i < 3))
+  println(List.append(List(1, 2, 3), List(4, 5, 6)))
 }
