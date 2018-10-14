@@ -3,7 +3,7 @@ case object Nil extends List[Nothing]
 case class Cons[+A](head: A, tail: List[A]) extends List[A]
 
 object List {
-  def apply[A](as: A*): List[A] = 
+  def apply[A](as: A*): List[A] =
     if (as.isEmpty) Nil
     else Cons(as.head, apply(as.tail: _*)) // * means variable length argument
   
@@ -28,7 +28,7 @@ object List {
     case Cons(_, t) => Cons(h, t)
   }
 
-  def drop[A](l: List[A], n: Int): List[A] = 
+  def drop[A](l: List[A], n: Int): List[A] =
     if (n <= 0) l
     else l match {
       case Nil => Nil
@@ -50,16 +50,33 @@ object List {
     case Cons(_, Nil) => Nil
     case Cons(h, t) => Cons(h, init(t))
   }
+
+  def foldRight[A, B](l: List[A], z: B)(f: (A, B) => B): B = l match {
+    case Nil => z
+    case Cons(h, t) => f(h, foldRight(t, z)(f))
+  }
+
+  def foldLeft[A, B](l: List[A], z: B)(f: (B, A) => B): B = l match {
+    case Nil => z
+    case Cons(h, t) => foldLeft(t, f(z, h))(f)
+  }
+
+  def length[A](l: List[A]): Int = foldRight(l, 0)((h, acc) => acc + 1)
+
+  def reverse[A](l: List[A]): List[A] = foldLeft(l, List[A]())((acc, h) => Cons(h, acc))
 }
-  
+
 
 object Main extends App {
-  println(List(1, 2, 3))
-  println(List.sum(List(1, 2, 3)))
-  println(List.tail(List(1, 2, 3)))
-  println(List.setHead(List(1, 3, 4), 2))
-  println(List.drop(List(1, 2, 3), 1))
-  val xs = List(1, 2, 3)
+  val list = List(1, 2, 3)
+  println(list)
+  println(List.sum(list))
+  println(List.tail(list))
+  println(List.setHead(list, 2))
+  println(List.drop(list, 1))
+  val xs = list
   println(List.dropWhile(xs)(i => i < 3))
-  println(List.append(List(1, 2, 3), List(4, 5, 6)))
+  println(List.append(list, List(4, 5, 6)))
+  println(List.length(list))
+  println(List.reverse(list))
 }
