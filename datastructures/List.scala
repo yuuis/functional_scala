@@ -50,7 +50,7 @@ object List {
     case Cons(_, Nil) => Nil
     case Cons(h, t) => Cons(h, init(t))
   }
-}   
+}
   
 
 object Main extends App {
